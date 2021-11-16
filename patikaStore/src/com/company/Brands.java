@@ -1,38 +1,29 @@
 package com.company;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Brands {
-    private int id;
     private String brandsName;
 
-    public Brands(int id, String brandsName) {
-        this.id = id;
-        this.brandsName = brandsName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Brands() {
     }
 
     public String getBrandsName() {
-        HashMap<Integer,String> brandsList = new HashMap<Integer,String>();
-        brandsList.put(1,"Samsung");
-        brandsList.put(2,"Lenovo");
-        brandsList.put(3,"Apple");
-        brandsList.put(4,"Huawei");
-        brandsList.put(5,"Casper");
-        brandsList.put(6,"Asus");
-        brandsList.put(7,"HP");
-        brandsList.put(8,"Xiaomi");
-        brandsList.put(9,"Monster");
+        ArrayList<String> brandsList = new ArrayList<>();
+        brandsList.add("Samsung");
+        brandsList.add("Lenovo");
+        brandsList.add("Apple");
+        brandsList.add("Huawei");
+        brandsList.add("Casper");
+        brandsList.add("Asus");
+        brandsList.add("HP");
+        brandsList.add("Xiaomi");
+        brandsList.add("Monster");
 
-        for(Integer brand : brandsList.keySet()){
-            System.out.println("id :" + brand + " Marka :" + brandsList.get(brand));
+        Collections.sort(brandsList);
+        for(String brand : brandsList){
+            System.out.println("-"+brand);
         }
         return brandsName;
     }
