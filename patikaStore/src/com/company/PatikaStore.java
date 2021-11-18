@@ -65,25 +65,25 @@ public class PatikaStore {
                         int addMemory = input.nextInt();
                         System.out.println("Ürün Ekran: ");
                         double addScreenSize = input.nextDouble();
-                        operationPanel.add(new NotebookProcess(addId,addProductName,addCategory,addStock,addBrand,addPrice,addDiscountRate,addRam,addMemory,addScreenSize));
+                        operationPanel.addNotebook(new NotebookProcess(addId,addProductName,addCategory,addStock,addBrand,addPrice,addDiscountRate,addRam,addMemory,addScreenSize));
                     }
                     else if(select1 == 3)
                     {
                         System.out.println("Id Girin: ");
                         int id = input.nextInt();
-                        operationPanel.listById(id);
+                        operationPanel.listByNotebookId(id);
                     }
                     else if(select1 == 4)
                     {
                         System.out.println("Marka Adı Girin: ");
                         String brand = input.next();
-                        operationPanel.listByBrand(brand);
+                        operationPanel.listByNotebookBrand(brand);
                     }
                     else if(select1 == 5)
                     {
                         System.out.println("Id Girin: ");
                         int id = input.nextInt();
-                        operationPanel.delete(id);
+                        operationPanel.deleteNotebook(id);
                     }
                     else if(select1 == 0)
                     {
@@ -95,12 +95,72 @@ public class PatikaStore {
                     }
                     break;
                 case 3:
-                    System.out.println("\nCep Telefonu İşlemleri:\n1- Ürünleri Listele | 2- Ürün Ekle");
-                    int select2=input.nextInt();
-                    if (select2==1){
-
-                    }else if (select2==2){
-
+                    System.out.println("Telefon İşlemleri\n"
+                            + "1 - Telefon Listele\n"
+                            + "2 - Telefon Ekle\n"
+                            + "3 - Id ile Telefon Listele\n"
+                            + "4 - Marka ile Telefon Listele\n"
+                            + "5 - Id ile Telefon Sil\n"
+                            + "0 - Çıkış\n");
+                    System.out.println("Tercihiniz: ");
+                    int selectp = input.nextInt();
+                    if(selectp == 1)
+                    {
+                        operationPanel.Phone();
+                    }
+                    else if(selectp == 2)
+                    {
+                        System.out.println("Ürün Id: ");
+                        int addId = input.nextInt();
+                        System.out.println("Ürün Adı: ");
+                        String addProductName = input.next();
+                        System.out.println("Ürün Fiyat: ");
+                        int addPrice =input.nextInt();
+                        System.out.println("Ürün Kategori: ");
+                        String addCategory = input.next();
+                        System.out.println("Ürün Ram: ");
+                        int addRam = input.nextInt();
+                        System.out.println("Marka: ");
+                        String addBrand = input.next();
+                        System.out.println("Ürün Stok: ");
+                        int addStock= input.nextInt();
+                        System.out.println("Ürün İndirim Oranı: ");
+                        double addDiscountRate = input.nextDouble();
+                        System.out.println("Ürün Depolama: ");
+                        int addMemory = input.nextInt();
+                        System.out.println("Ürün Ekran: ");
+                        double addScreenSize = input.nextDouble();
+                        System.out.println("Batery Girin: ");
+                        double addBatteryPower = input.nextDouble();
+                        System.out.println("Renk Girin ");
+                        String addColor = input.next();
+                        operationPanel.addPhone(new PhoneProcess(addId,addProductName,addCategory,addStock,addBrand,addPrice,addDiscountRate,addRam,addMemory,addBatteryPower,addColor,addScreenSize));
+                    }
+                    else if(selectp == 3)
+                    {
+                        System.out.println("Id Girin: ");
+                        int id = input.nextInt();
+                        operationPanel.listByPhoneId(id);
+                    }
+                    else if(selectp == 4)
+                    {
+                        System.out.println("Marka Adı Girin: ");
+                        String brand = input.next();
+                        operationPanel.listByPhoneBrand(brand);
+                    }
+                    else if(selectp == 5)
+                    {
+                        System.out.println("Id Girin: ");
+                        int id = input.nextInt();
+                        operationPanel.deletePhone(id);
+                    }
+                    else if(selectp == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        System.out.println("Yanlış değer girdiniz!");
                     }
                     break;
                 default:

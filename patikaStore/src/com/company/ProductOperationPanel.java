@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ProductOperationPanel {
-    Scanner input = new Scanner(System.in);
     ArrayList<NotebookProcess> noteBookList = new ArrayList<>();
-    List<PhoneProcess> phone = new ArrayList<>();
+    ArrayList<PhoneProcess> phoneList = new ArrayList<>();
     Brands brands = new Brands();
 
 
@@ -38,10 +37,10 @@ public class ProductOperationPanel {
                         product.getMemory(), product.getScreenSize(),  product.getRam());
 
         }
+        System.out.println("--------------------------------------------------------------------------------------------\n");
        
     }
-    public void listById(int id)
-    {
+    public void listByNotebookId(int id) {
         String leftAlignFormat = "| %-2d | %-20s | %-11s | %-9s | %-10d | %-9s | %-9s |%n";
         String headers = "| %-2s | %-20s | %-11s | %-9s | %-10s | %-9s | %-9s |%n";
 
@@ -60,7 +59,7 @@ public class ProductOperationPanel {
         }
     }
 
-    public void listByBrand(String brandN)
+    public void listByNotebookBrand(String brandN)
     {
         String leftAlignFormat = "| %-2d | %-20s | %-11s | %-9s | %-10d | %-9s | %-9s |%n";
         String headers = "| %-2s | %-20s | %-11s | %-9s | %-10s | %-9s | %-9s |%n";
@@ -84,12 +83,12 @@ public class ProductOperationPanel {
 
     }
 
-    public void add(NotebookProcess n)
+    public void addNotebook(NotebookProcess n)
     {
         this.noteBookList.add(n);
     }
 
-    public void delete(int id)
+    public void deleteNotebook(int id)
     {
         Iterator<NotebookProcess> iterator = noteBookList.iterator();
         while(iterator.hasNext())
@@ -104,6 +103,7 @@ public class ProductOperationPanel {
     }
 
     //Phone
+
     public void Phone(){
         PhoneProcess mpSamsung = new PhoneProcess(1,"Samsung Galaxy A51  ","Telefon",5,
                 "Samsung",3199,0.5,12,128,4000,"Siyah",6.5);
@@ -112,18 +112,83 @@ public class ProductOperationPanel {
         PhoneProcess mpXiaomi =new PhoneProcess(3,"Redmi Note10 Pro 8GB","Telefon",5,
                 "Xiaomi ",4012,0.5,16,128,4000,"Beyaz",6.5);
 
-        ArrayList<PhoneProcess> phoneList = new ArrayList<>();
+
         phoneList.add(mpSamsung);
         phoneList.add(mpApple);
         phoneList.add(mpXiaomi);
+        listPhone(phoneList);
     }
     private void listPhone(ArrayList<PhoneProcess> phoneList){
-        System.out.println("---------------------------------------------------------------------------------------------");
-        System.out.println("| ID| Ürün Adı             |Fiyat    |Marka       |Depolama  |Ekran     |Pil      |RAM  |Renk   ");
-        System.out.println("---------------------------------------------------------------------------------------------");
+        String leftAlignFormat = "| %-2d | %-20s | %-11s | %-9s | %-10d | %-9s | %-9s | %-9s | %-5d |%n";
+        String headers = "| %-2s | %-20s | %-11s | %-9s | %-10s | %-9s | %-9s | %-9s | %-5s |%n";
+        System.out.println("------------------------------------------------------------------------------------------------------\n");
+        System.out.format(headers, "ID","Ürün Adı", "Fiyat",  "Marka", "Depolama", "Ekran","Renk", "Pil","RAM" );
+        System.out.println("------------------------------------------------------------------------------------------------------\n");
         for (PhoneProcess product : phoneList){
-            System.out.println("| " + product.getId() +" |"+ product.getProductName()+"  |"+product.getPrice()+"     |"+product.getBrand()+"     |"+product.getMemory()+"       |"+product.getScreenSize()+"       |"+product.getBatteryPower()+"   |"+product.getRam()+"   |"+product.getColor());
+            System.out.format(leftAlignFormat, product.getId(), product.getProductName(), product.getPrice(), product.getBrand(), product.getMemory(), product.getScreenSize(),
+                     product.getColor(),product.getBatteryPower(),product.getRam());
         }
-        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------------------------------------");
+    }
+    public void listByPhoneId(int id) {
+        String leftAlignFormat = "| %-2d | %-20s | %-11s | %-9s | %-10d | %-9s | %-9s |%n";
+        String headers = "| %-2s | %-20s | %-11s | %-9s | %-10s | %-9s | %-9s |%n";
+
+        System.out.println("--------------------------------------------------------------------------------------------\n");
+        System.out.format(headers, "ID", "Product Name", "Price", "Brand", "Storage", "Screen", "RAM");
+        System.out.println("--------------------------------------------------------------------------------------------\n");
+
+        for (PhoneProcess product : phoneList) {
+            if (product.getId() == id)
+            {
+                System.out.format(leftAlignFormat, product.getId(), product.getProductName(), product.getPrice(), product.getBrand(),
+                        product.getMemory(), product.getScreenSize(),  product.getRam());
+                break;
+            }
+
+        }
+    }
+
+    public void listByPhoneBrand(String brandP)
+    {
+        String leftAlignFormat = "| %-2d | %-20s | %-11s | %-9s | %-10d | %-9s | %-9s |%n";
+        String headers = "| %-2s | %-20s | %-11s | %-9s | %-10s | %-9s | %-9s |%n";
+
+        System.out.println("--------------------------------------------------------------------------------------------\n");
+        System.out.format(headers, "ID", "Product Name", "Price", "Brand", "Storage", "Screen", "RAM");
+        System.out.println("--------------------------------------------------------------------------------------------\n");
+
+
+        Iterator<PhoneProcess> iterator = phoneList.iterator();
+        while(iterator.hasNext())
+        {
+            PhoneProcess n = iterator.next();
+            String b = n.getBrand();
+            if (b.equalsIgnoreCase(brandP))
+            {
+                System.out.format(leftAlignFormat, n.getId(), n.getProductName(), n.getPrice(), n.getBrand(),
+                        n.getMemory(), n.getScreenSize(),  n.getRam());
+            }
+        }
+
+    }
+
+    public void addPhone(PhoneProcess n)
+    {
+        this.phoneList.add(n);
+    }
+
+    public void deletePhone(int id)
+    {
+        Iterator<PhoneProcess> iterator = phoneList.iterator();
+        while(iterator.hasNext())
+        {
+            PhoneProcess value = iterator.next();
+            if (value.getId() == id)
+            {
+                iterator.remove();
+                break;
+            }
+        }
     }
 }
