@@ -6,5 +6,13 @@ public class Main {
       PatikaStore patikaStore = new PatikaStore();
       patikaStore.start();
 
+
+/*
+        Scanner input = new Scanner(System.in);
+        System.out.println("Ekleme Ekranına Hoşgeldiniz. Adınızı Girin: ");
+        String cemile = input.nextLine();
+        System.out.println("Adınız: "+cemile);
+
+ */
     }
 }
