@@ -1,10 +1,10 @@
 package com.patikadev.Model;
 import com.patikadev.Helper.DBConnector;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
 public class User {
     private int id;
     private String name, User_name,password,user_type;
@@ -71,16 +71,30 @@ public class User {
             while (rs.next()){
                 object = new User();
                 object.setId(rs.getInt("id"));
-                object.setName(rs.getString("name"));
-                object.setUser_name(rs.getString("user_name"));
+                object.setName(rs.getString("user_name"));
+                object.setUser_name(rs.getString("user_nickname"));
                 object.setPassword(rs.getString("password"));
-                object.setPassword(rs.getString("user_type"));
+                object.setUser_type(rs.getString("user_type"));
                 userList.add(object);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return userList;
     }
 
+    public static boolean add(String name , String user_name , String password , String user_type){
+        String query = "INSERT INTO user (name,user_name,password,user_type) VALUES (?,?,?,?)";
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setString(1,name);
+            pr.setString(2,user_name);
+            pr.setString(1,password);
+            pr.setString(1,user_type);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return  true;
+    }
 }

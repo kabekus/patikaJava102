@@ -5,8 +5,8 @@ import com.patikadev.View.OperatorGUI;
 
 public class Main {
     public static void main(String[] args) {
-        Helper.setLayout();
 
+        Helper.setLayout();
         Operator op = new Operator();
         OperatorGUI operatorGUI = new OperatorGUI(op);
     }
