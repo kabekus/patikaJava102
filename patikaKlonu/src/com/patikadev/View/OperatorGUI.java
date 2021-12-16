@@ -5,9 +5,12 @@ import com.patikadev.Model.User;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class OperatorGUI extends JFrame {
     private JPanel wrapper;
@@ -26,6 +29,10 @@ public class OperatorGUI extends JFrame {
     private JButton btn_userAdd;
     private JTextField fld_userId;
     private JButton btn_userDelete;
+    private JTextField fld_searchName;
+    private JTextField fld_searchNickName;
+    private JComboBox cmb_searchType;
+    private JButton btn_searchUser;
     private DefaultTableModel mdl_userList;
     private Object[] row_userList;
 
@@ -72,6 +79,22 @@ public class OperatorGUI extends JFrame {
              }
          });
 
+         tbl_userList.getModel().addTableModelListener(e -> {
+             if (e.getType() == TableModelEvent.UPDATE){
+                 int id = Integer.parseInt(tbl_userList.getValueAt(tbl_userList.getSelectedRow(),0).toString());
+                 String user_name = tbl_userList.getValueAt(tbl_userList.getSelectedRow(),1).toString();
+                 String user_nickname = tbl_userList.getValueAt(tbl_userList.getSelectedRow(),2).toString();
+                 String password = tbl_userList.getValueAt(tbl_userList.getSelectedRow(),3).toString();
+                 String user_type = tbl_userList.getValueAt(tbl_userList.getSelectedRow(),4).toString();
+
+                 if (User.updateFunction(id,user_name, user_nickname, password, user_type)){
+                     Helper.showMessage("success");
+
+                 }
+                 loadUserModel();
+             }
+         });
+
         //Butona basılınca ekleme işlemi
         btn_userAdd.addActionListener(e -> {
             if (Helper.isFieldEmpty(fld_userName)|| Helper.isFieldEmpty(fld_user_Nickname) || Helper.isFieldEmpty(fld_password)){
@@ -99,12 +122,25 @@ public class OperatorGUI extends JFrame {
             }else {
                 int userId = Integer.parseInt(fld_userId.getText());
                 if (User.deleteFunction(userId)){
-                    Helper.showMessage("succes");
+                    Helper.showMessage("success");
                     loadUserModel();
                 }else {
                     Helper.showMessage("error");
                 }
             }
+        });
+        // Arama butonu işlemi
+        btn_searchUser.addActionListener(e -> {
+            String user_name = fld_searchName.getText();
+            String user_nickname = fld_searchNickName.getText();
+            String user_type = cmb_searchType.getSelectedItem().toString();
+            String query =User.searchQuery(user_name,user_nickname,user_type);
+            loadUserModel(User.searchUserList(query));
+
+        });
+        // Çıkış butonu
+        btn_exit.addActionListener(e -> {
+            dispose();
         });
     }
 
@@ -121,6 +157,17 @@ public class OperatorGUI extends JFrame {
             mdl_userList.addRow(row_userList);
         }
     }
-
-       
+    public  void loadUserModel(ArrayList<User> list){
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_userList.getModel();
+        clearModel.setRowCount(0);
+        for (User obj:list){
+            int i = 0;
+            row_userList[i++] = obj.getId();
+            row_userList[i++] = obj.getUser_name();
+            row_userList[i++] = obj.getUser_nickname();
+            row_userList[i++] = obj.getPassword();
+            row_userList[i++] = obj.getUser_type();
+            mdl_userList.addRow(row_userList);
+        }
+    }
 }

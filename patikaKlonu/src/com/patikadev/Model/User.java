@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 public class User {
     private int id;
-    private String user_name, user_nickname,password,user_type;
+    private String user_name, user_nickname, password, user_type;
 
     public User() {
 
@@ -63,14 +63,14 @@ public class User {
         this.user_type = user_type;
     }
 
-    public static ArrayList<User> getList(){
+    public static ArrayList<User> getList() {
         ArrayList<User> userList = new ArrayList<>();
         String query = "SELECT * From user";
         User object;
         try {
             Statement st = DBConnector.getInstance().createStatement();
             ResultSet rs = st.executeQuery(query);
-            while (rs.next()){
+            while (rs.next()) {
                 object = new User();
                 object.setId(rs.getInt("id"));
                 object.setUser_name(rs.getString("user_name"));
@@ -86,23 +86,23 @@ public class User {
         return userList;
     }
 
-    public static boolean add(String user_name , String user_nickname , String password , String user_type){
+    public static boolean add(String user_name, String user_nickname, String password, String user_type) {
         String query = "INSERT INTO user (user_name,user_nickname,password,user_type) VALUES (?,?,?,?)";
         User findUser = User.getFetch(user_nickname);
-        if (findUser != null){
+        if (findUser != null) {
             Helper.showMessage("Bu kullanıcı adı kullanılamaz !");
             return false;
         }
 
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
-            pr.setString(1,user_name);
-            pr.setString(2,user_nickname);
-            pr.setString(3,password);
-            pr.setString(4,user_type);
+            pr.setString(1, user_name);
+            pr.setString(2, user_nickname);
+            pr.setString(3, password);
+            pr.setString(4, user_type);
 
             int response = pr.executeUpdate();
-            if (response == -1){
+            if (response == -1) {
                 Helper.showMessage("error");
             }
 
@@ -111,18 +111,18 @@ public class User {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return  true;
+        return true;
     }
 
-    public static User getFetch(String   user_nickname){
+    public static User getFetch(String user_nickname) {
         User obj = null;
         String query = "SELECT * FROM user WHERE user_nickname = ?";
 
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
-            pr.setString(01,user_nickname);
+            pr.setString(01, user_nickname);
             ResultSet rs = pr.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 obj = new User();
                 obj.setId(rs.getInt("id"));
                 obj.setUser_name(rs.getString("user_name"));
@@ -136,12 +136,12 @@ public class User {
         return obj;
     }
 
-    public static boolean deleteFunction(int id){
+    public static boolean deleteFunction(int id) {
         String query = "DELETE FROM user WHERE id = ?";
 
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
-            pr.setInt(1,id);
+            pr.setInt(1, id);
             return pr.executeUpdate() != -1;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,4 +149,58 @@ public class User {
         return true;
     }
 
+    public static boolean updateFunction(int id, String user_name, String user_nickname, String password, String user_type) {
+        String query = "UPDATE user SET user_name = ? , user_nickname = ? , password = ? , user_type = ? WHERE id = ? ";
+        User findUser = User.getFetch(user_nickname);
+        if (findUser != null && findUser.getId() != id) {
+            Helper.showMessage("Bu kullanıcı adı kullanılamaz !");
+            return false;
+        }
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setString(1, user_name);
+            pr.setString(2, user_nickname);
+            pr.setString(3, password);
+            pr.setString(4, user_type);
+            pr.setInt(5, id);
+            return pr.executeUpdate() != -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public static ArrayList<User> searchUserList(String query) {
+        ArrayList<User> userList = new ArrayList<>();
+        User object;
+        try {
+            Statement st = DBConnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                object = new User();
+                object.setId(rs.getInt("id"));
+                object.setUser_name(rs.getString("user_name"));
+                object.setUser_nickname(rs.getString("user_nickname"));
+                object.setPassword(rs.getString("password"));
+                object.setUser_type(rs.getString("user_type"));
+                userList.add(object);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return userList;
+    }
+
+    public static String searchQuery(String user_name, String user_nickname, String user_type) {
+        String query = "SELECT * FROM user WHERE user_nickname LIKE '%{{user_nickname}}%' AND user_name LIKE '%{{user_name}}%'";
+        query = query.replace("{{user_nickname}}", user_nickname);
+        query = query.replace("{{user_name}}", user_name);
+        if (!user_type.isEmpty()) {
+            query += "AND user_type = '{{user_type}}'";
+            query = query.replace("{{user_type}}", user_type);
+        }
+
+        return query;
+    }
 }
