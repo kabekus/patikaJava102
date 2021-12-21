@@ -1,12 +1,10 @@
 package com.patikadev.View;
 import com.patikadev.Helper.*;
 import com.patikadev.Model.Operator;
+import com.patikadev.Model.Patika;
 import com.patikadev.Model.User;
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +31,17 @@ public class OperatorGUI extends JFrame {
     private JTextField fld_searchNickName;
     private JComboBox cmb_searchType;
     private JButton btn_searchUser;
+    private JPanel pnl_patikaList;
+    private JScrollPane scr_patikaList;
+    private JTable tbl_patikaList;
+    private JPanel pnl_patikaAdd;
+    private JTextField fld_patikaName;
+    private JButton btn_patikaAdd;
     private DefaultTableModel mdl_userList;
     private Object[] row_userList;
+    private DefaultTableModel mdl_patikaList;
+    private Object[] row_patikaList;
+    private JPopupMenu patikaMenu;
 
     private final Operator operator;
 
@@ -51,7 +58,7 @@ public class OperatorGUI extends JFrame {
 
         lbl_welcome.setText("Hoş Geldin "+ operator.getUser_name());
 
-        //ModelUserList
+        //UserList
         mdl_userList = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -93,9 +100,28 @@ public class OperatorGUI extends JFrame {
                  }
                  loadUserModel();
              }
-         });
+        });
+        // ###
 
-        //Butona basılınca ekleme işlemi
+        //PatikaList
+        patikaMenu = new JPopupMenu();
+        JMenuItem updateMenu = new JMenuItem("Güncelle");
+        JMenuItem deleteMenu = new JMenuItem("Sil");
+        patikaMenu.add(updateMenu);
+        patikaMenu.add(deleteMenu);
+
+        mdl_patikaList = new DefaultTableModel();
+        Object[] col_patikaList = {"ID", "Patika Adı"};
+        mdl_patikaList.setColumnIdentifiers(col_patikaList);
+        row_patikaList = new Object[col_patikaList.length];
+        loadPatikaModel();
+
+        tbl_patikaList.setModel(mdl_patikaList);
+        tbl_patikaList.getTableHeader().setReorderingAllowed(false);
+        tbl_patikaList.getColumnModel().getColumn(0).setMaxWidth(75);
+        // ###
+
+        //Kişi Ekleme Butonu
         btn_userAdd.addActionListener(e -> {
             if (Helper.isFieldEmpty(fld_userName)|| Helper.isFieldEmpty(fld_user_Nickname) || Helper.isFieldEmpty(fld_password)){
                 Helper.showMessage("fill");
@@ -114,8 +140,9 @@ public class OperatorGUI extends JFrame {
                 }
             }
         });
+        // ###
 
-        //Butona basılınca silme işlmi
+        //Kişi Silme Butonu
         btn_userDelete.addActionListener(e -> {
             if (Helper.isFieldEmpty(fld_userId)){
                 Helper.showMessage("fill");
@@ -129,7 +156,9 @@ public class OperatorGUI extends JFrame {
                 }
             }
         });
-        // Arama butonu işlemi
+        // ###
+
+        // Kişi Arama butonu işlemi
         btn_searchUser.addActionListener(e -> {
             String user_name = fld_searchName.getText();
             String user_nickname = fld_searchNickName.getText();
@@ -138,17 +167,46 @@ public class OperatorGUI extends JFrame {
             loadUserModel(User.searchUserList(query));
 
         });
+
         // Çıkış butonu
         btn_exit.addActionListener(e -> {
             dispose();
         });
+
+        //Patika Ekleme Butonu
+        btn_patikaAdd.addActionListener(e -> {
+            if (Helper.isFieldEmpty(fld_patikaName)){
+                Helper.showMessage("fill");
+            }else {
+                if (Patika.add(fld_patikaName.getText())){
+                    Helper.showMessage("success");
+                    loadPatikaModel();
+                    fld_patikaName.setText(null);
+                }else {
+                    Helper.showMessage("error");
+                }
+            }
+        });
+    }
+
+    private void loadPatikaModel(){
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_patikaList.getModel();
+        clearModel.setRowCount(0);
+        int i=0;
+        for (Patika obj : Patika.getList()){
+            i=0;
+            row_patikaList[i++] = obj.getId();
+            row_patikaList[i++] = obj.getName();
+            mdl_patikaList.addRow(row_patikaList);
+        }
     }
 
     public  void loadUserModel(){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_userList.getModel();
         clearModel.setRowCount(0);
+        int i;
         for (User obj:User.getList()){
-            int i = 0;
+            i = 0;
             row_userList[i++] = obj.getId();
             row_userList[i++] = obj.getUser_name();
             row_userList[i++] = obj.getUser_nickname();
