@@ -63,9 +63,31 @@ public class User {
         this.user_type = user_type;
     }
 
-    public static ArrayList<User> getList() {
+    public static ArrayList<User> getListOnlyEducator() {
         ArrayList<User> userList = new ArrayList<>();
-        String query = "SELECT * From user";
+        String query = "SELECT * From user WHERE user_type='Educator' ";
+        User object;
+        try {
+            Statement st = DBConnector.getInstance().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                object = new User();
+                object.setId(rs.getInt("id"));
+                object.setUser_name(rs.getString("user_name"));
+                object.setUser_nickname(rs.getString("user_nickname"));
+                object.setPassword(rs.getString("password"));
+                object.setUser_type(rs.getString("user_type"));
+                userList.add(object);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return userList;
+    }
+    public static ArrayList<User> getList(){
+        ArrayList<User> userList = new ArrayList<>();
+        String query = "SELECT * From user ";
         User object;
         try {
             Statement st = DBConnector.getInstance().createStatement();
@@ -160,10 +182,15 @@ public class User {
 
     public static boolean deleteFunction(int id) {
         String query = "DELETE FROM user WHERE id = ?";
+        ArrayList<Course> courseList = Course.getListByUser(id);
+        for (Course c:courseList){
+            Course.deleteFunction(c.getId());
+        }
 
         try {
             PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
             pr.setInt(1, id);
+
             return pr.executeUpdate() != -1;
         } catch (SQLException e) {
             e.printStackTrace();

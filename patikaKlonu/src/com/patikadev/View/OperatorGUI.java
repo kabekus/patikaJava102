@@ -82,7 +82,7 @@ public class OperatorGUI extends JFrame {
         mdl_userList.setColumnIdentifiers(col_UserList);
 
         row_userList = new Object[col_UserList.length];
-        loadUserModel();
+        loadUser();
 
         tbl_userList.setModel(mdl_userList);
         tbl_userList.getTableHeader().setReorderingAllowed(false);
@@ -109,6 +109,8 @@ public class OperatorGUI extends JFrame {
 
                  }
                  loadUserModel();
+                 loadEducatorCombo();
+                 loadCourseModel();
              }
         });
         // ###
@@ -128,6 +130,7 @@ public class OperatorGUI extends JFrame {
                 public void windowClosed(WindowEvent e) {
                     loadPatikaModel();
                     loadPatikaCombo();
+                    loadCourseModel();
                 }
             });
         });
@@ -139,6 +142,7 @@ public class OperatorGUI extends JFrame {
                     Helper.showMessage("success");
                     loadPatikaModel();
                     loadPatikaCombo();
+                    loadCourseModel();
                 }else{
                     Helper.showMessage("error");
                 }
@@ -171,7 +175,7 @@ public class OperatorGUI extends JFrame {
         Object[] col_courseList = {"ID", "Ders Adı","Programlama Dili","Patika","Eğitmen"};
         mdl_courseList.setColumnIdentifiers(col_courseList);
         row_courseList = new Object[col_courseList.length];
-        loadCourseList();
+        loadCourseModel();
         
         tbl_courseList.setModel(mdl_courseList);
         tbl_courseList.getColumnModel().getColumn(0).setMaxWidth(75);
@@ -195,6 +199,7 @@ public class OperatorGUI extends JFrame {
                 if (User.add(user_name,user_nickname,password,user_type)){
                     Helper.showMessage("success");
                     loadUserModel();
+                    loadEducatorCombo();
                     fld_userName.setText(null);
                     fld_user_Nickname.setText(null);
                     fld_password.setText(null);
@@ -213,6 +218,9 @@ public class OperatorGUI extends JFrame {
                     if (User.deleteFunction(userId)){
                         Helper.showMessage("success");
                         loadUserModel();
+                        loadEducatorCombo();
+                        loadCourseModel();
+                        fld_userId.setText(null);
                     }else {
                         Helper.showMessage("error");
                     }
@@ -251,6 +259,24 @@ public class OperatorGUI extends JFrame {
                 }
             }
         });
+
+        //Kurs Ekleme Butonu
+        btn_courseAdd.addActionListener(e -> {
+            Item patikaItem = (Item) cmb_coursePatika.getSelectedItem();
+            Item userItem = (Item) cmb_courseUser.getSelectedItem();
+            if (Helper.isFieldEmpty(fld_courseName) || Helper.isFieldEmpty(fld_courseLanguage)){
+                Helper.showMessage("fill");
+            }else{
+                if (Course.add(userItem.getKey(), patikaItem.getKey(), fld_courseName.getText(), fld_courseLanguage.getText())){
+                    Helper.showMessage("success");
+                    loadCourseModel();
+                    fld_courseLanguage.setText(null);
+                    fld_courseName.setText(null);
+                }else {
+                    Helper.showMessage("error");
+                }
+            }
+        });
     }
 
     private void loadPatikaCombo() {
@@ -262,14 +288,13 @@ public class OperatorGUI extends JFrame {
 
     private void loadEducatorCombo(){
         cmb_courseUser.removeAllItems();
-        for (User obj : User.getList()){
-            if (obj.getUser_type().equals("Educator")){
+        for (User obj : User.getListOnlyEducator()){
                 cmb_courseUser.addItem(new Item(obj.getId(),obj.getUser_name()));
-            }
+
         }
     }
 
-    private void loadCourseList() {
+    private void loadCourseModel() {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_courseList.getModel();
         clearModel.setRowCount(0);
         int i = 0;
@@ -285,7 +310,6 @@ public class OperatorGUI extends JFrame {
     }
 
 
-
     private void loadPatikaModel(){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_patikaList.getModel();
         clearModel.setRowCount(0);
@@ -297,8 +321,21 @@ public class OperatorGUI extends JFrame {
             mdl_patikaList.addRow(row_patikaList);
         }
     }
-
     public  void loadUserModel(){
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_userList.getModel();
+        clearModel.setRowCount(0);
+        int i;
+        for (User obj:User.getListOnlyEducator()){
+            i = 0;
+            row_userList[i++] = obj.getId();
+            row_userList[i++] = obj.getUser_name();
+            row_userList[i++] = obj.getUser_nickname();
+            row_userList[i++] = obj.getPassword();
+            row_userList[i++] = obj.getUser_type();
+            mdl_userList.addRow(row_userList);
+        }
+    }
+    public  void loadUser(){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_userList.getModel();
         clearModel.setRowCount(0);
         int i;
