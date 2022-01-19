@@ -1,6 +1,7 @@
 package com.patikadev.Model;
 import com.patikadev.Helper.DBConnector;
 import com.patikadev.Helper.Helper;
+import com.patikadev.View.EducatorGUI;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -166,6 +167,41 @@ public class User {
             pr.setInt(1,id);
             ResultSet rs = pr.executeQuery();
             if (rs.next()) {
+                obj = new User();
+                obj.setId(rs.getInt("id"));
+                obj.setUser_name(rs.getString("user_name"));
+                obj.setUser_nickname(rs.getString("user_nickname"));
+                obj.setPassword(rs.getString("password"));
+                obj.setUser_type(rs.getString("user_type"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+    public static User getFetch(String user_nickname, String password) {
+        User obj = null;
+        String query = "SELECT * FROM user WHERE user_nickname = ? AND password = ?";
+
+        try {
+            PreparedStatement pr = DBConnector.getInstance().prepareStatement(query);
+            pr.setString(1, user_nickname);
+            pr.setString(2,password);
+            ResultSet rs = pr.executeQuery();
+            if (rs.next()) {
+                switch (rs.getString("user_type")){
+                    case "Operator":
+                        obj = new Operator();
+                        break;
+                    case "Educator":
+                        obj = new Educator();
+                        break;
+                    case "Student":
+                        obj = new Student();
+                        break;
+                    default:
+                        obj = new User();
+                }
                 obj = new User();
                 obj.setId(rs.getInt("id"));
                 obj.setUser_name(rs.getString("user_name"));
