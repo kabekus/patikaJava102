@@ -88,6 +88,7 @@ public class User {
     }
     public static ArrayList<User> getList(){
         ArrayList<User> userList = new ArrayList<>();
+
         String query = "SELECT * From user ";
         User object;
         try {
