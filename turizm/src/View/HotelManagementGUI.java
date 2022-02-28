@@ -17,6 +17,17 @@ public class HotelManagementGUI extends JFrame {
     private JCheckBox cbx_swimmingPool;
     private JComboBox cmb_hostelType;
     private JButton btn_hotelAdd;
+    private JTabbedPane tbdpn_hotelManagement;
+    private JComboBox cmb_hotelName;
+    private JTextField fld_bedNum;
+    private JTextField fld_squareMeters;
+    private JCheckBox cbx_tv;
+    private JCheckBox cbx_minibar;
+    private JCheckBox cbx_gameConsole;
+    private JCheckBox cbx_till;
+    private JCheckBox cbx_projection;
+    private JButton btn_roomAdd;
+    private JComboBox cmb_roomType;
 
     public void createUIComponents() {
 
